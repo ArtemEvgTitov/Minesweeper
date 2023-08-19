@@ -15,9 +15,7 @@ class MyButton(tk.Button):
         return f"MyButton {self.x} {self.y} {self.number} {self.is_mine}"
 
 
-
 class MineSweeper:
-
     ROWS = 5
     COLUMNS = 7
     MINES = 15
@@ -30,9 +28,17 @@ class MineSweeper:
             temp = []
             for j in range(MineSweeper.COLUMNS):
                 btn = MyButton(MineSweeper.window, x=i, y=j, number=count)
+                btn.config(command=lambda button=btn: self.click(button))
                 temp.append(btn)
                 count += 1
             self.buttons.append(temp)
+
+    def click(self, clicked_button: MyButton):
+        if clicked_button.is_mine:
+            clicked_button.config(text='*', background='red', disabledforeground='black')
+        else:
+            clicked_button.config(text=clicked_button.number, disabledforeground='black')
+        clicked_button.config(state='disabled')
 
     def create_widgest(self):
         for i in range(MineSweeper.ROWS):
@@ -56,7 +62,6 @@ class MineSweeper:
             for btn in row_btn:
                 if btn.number in index_mines:
                     btn.is_mine = True
-
 
     @staticmethod
     def get_mine_places():
