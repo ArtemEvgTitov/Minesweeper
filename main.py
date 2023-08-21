@@ -45,8 +45,21 @@ class MineSweeper:
             for j in range(MineSweeper.COLUMNS + 2):
                 btn = MyButton(MineSweeper.window, x=i, y=j)
                 btn.config(command=lambda button=btn: self.click(button))
+                btn.bind('<Button-3>', self.right_click)
                 temp.append(btn)
             self.buttons.append(temp)
+
+    def right_click(self, event):
+        if MineSweeper.IS_GAME_OVER == True:
+            return
+        current_button = event.widget
+        if current_button['state'] == 'normal':
+            current_button['state'] = 'disabled'
+            current_button['text'] = '🚩'
+            current_button['disabledforeground'] = 'red'
+        elif current_button['text'] == '🚩':
+            current_button['text'] = ''
+            current_button['state'] = 'normal'
 
     def click(self, clicked_button: MyButton):
 
