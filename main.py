@@ -1,6 +1,6 @@
 import tkinter as tk
 from random import shuffle
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo, showerror
 
 colors = {
     0: 'white',
@@ -110,6 +110,37 @@ class MineSweeper:
         self.__init__()
         self.create_widgets()
         MineSweeper.IS_FIRST_CLICK = True
+        MineSweeper.IS_GAME_OVER = False
+
+    def create_settings_window(self):
+        win_settings = tk.Toplevel(self.window)
+        win_settings.wm_title('Настройки')
+        tk.Label(win_settings, text='Количество строк').grid(row=0, column=0)
+        row_entry = tk.Entry(win_settings)
+        row_entry.insert(0, str(MineSweeper.ROWS))
+        row_entry.grid(row=0, column=1, padx=20, pady=20)
+        tk.Label(win_settings, text='Количество столбцов').grid(row=1, column=0)
+        column_entry = tk.Entry(win_settings)
+        column_entry.insert(0, str(MineSweeper.COLUMNS))
+        column_entry.grid(row=1, column=1, padx=20, pady=20)
+        tk.Label(win_settings, text='Количество мин').grid(row=2, column=0)
+        mines_entry = tk.Entry(win_settings)
+        mines_entry.insert(0, str(MineSweeper.MINES))
+        mines_entry.grid(row=2, column=1, padx=20, pady=20)
+        save_settings_button = tk.Button(win_settings, text='Применить настройки',
+                  command=lambda: self.change_settings(row_entry, column_entry, mines_entry))
+        save_settings_button.grid(row=3, column=0, columnspan=2, padx=20, pady=20)
+
+    def change_settings(self, row: tk.Entry, column: tk.Entry, mines: tk.Entry):
+        try:
+            int(row.get()), int(column.get()), int(mines.get())
+        except ValueError:
+            showerror('Ошибка', 'Вы ввели неправильное значение!')
+            return
+        MineSweeper.ROWS = int(row.get())
+        MineSweeper.COLUMNS = int(column.get())
+        MineSweeper.MINES = int(mines.get())
+        self.reload()
 
     def create_widgets(self):
 
@@ -118,7 +149,7 @@ class MineSweeper:
 
         settings_menu = tk.Menu(menubar, tearoff=0)
         settings_menu.add_command(label='Играть', command=self.reload)
-        settings_menu.add_command(label='Настройки')
+        settings_menu.add_command(label='Настройки', command=self.create_settings_window)
         settings_menu.add_command(label='Выход', command=self.window.destroy)
         menubar.add_cascade(label='Файл', menu=settings_menu)
 
@@ -134,7 +165,6 @@ class MineSweeper:
             self.window.rowconfigure(i, weight=1)
         for i in range(1, MineSweeper.COLUMNS + 1):
             self.window.columnconfigure(i, weight=1)
-
 
     def open_all_buttons(self):
         for i in range(MineSweeper.ROWS + 2):
