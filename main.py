@@ -179,6 +179,8 @@ class MineSweeper:
         for i in range(1, MineSweeper.COLUMNS + 1):
             self.window.columnconfigure(i, weight=1)
 
+        # tk.Label(self.window, text=f'Количество мин: {MineSweeper.MINES}').grid(row=0, column=0, padx=10, pady=10)
+
     def open_all_buttons(self):
         for i in range(MineSweeper.ROWS + 2):
             for j in range(MineSweeper.COLUMNS + 2):
@@ -191,8 +193,6 @@ class MineSweeper:
 
     def start(self):
         self.create_widgets()
-
-        # self.open_all_buttons()
         MineSweeper.window.mainloop()
 
     def print_buttons(self):
